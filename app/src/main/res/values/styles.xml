@@ -8,4 +8,22 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--styles in @InfoActiity-->
+    <style name="header_style">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="textColor">#2B3D4D</item>
+    </style>
+
+    <style name="sub_header_style">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <style name="input_style">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+
 </resources>

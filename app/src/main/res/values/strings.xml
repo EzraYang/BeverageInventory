@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">BeverageInventory</string>
+    <string name="app_name">Beverage Inventory</string>
+
+    <!--in @list_item-->
+    <string name="btn_sell_1">sell 1</string>
+
+    <!--in @menu_main-->
+    <string name="action_add">Add</string>
+
+    <!--in @InfoActivity-->
+    <string name="name">Name</string>
+    <string name="price">Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="update">Update: </string>
+    <string name="increase_by">Increase quantity by</string>
+    <string name="decrease_by">Decrease quantity by</string>
+    <string name="increase_btntxt">+</string>
+    <string name="decrease_btntxt">-</string>
+    <string name="supplier">Supplier: </string>
+    <string name="order_more">Order more</string>
+
+    <!--in @menu_info-->
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+
+
 </resources>

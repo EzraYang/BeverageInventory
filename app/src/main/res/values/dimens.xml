@@ -2,4 +2,12 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--dimens in @list_item-->
+    <dimen name="list_item_btn_width">40dp</dimen>
+    <dimen name="quantity_txt_size">30sp</dimen>
+
+    <!--dimens in @InfoActivity-->
+    <dimen name="pic_width">120dp</dimen>
+    <dimen name="pic_height">120dp</dimen>
 </resources>

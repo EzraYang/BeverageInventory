@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_horizontal_margin"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/bev_nameField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="name field"
+            android:fontFamily="sans-serif-medium"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="#2B3D4D"/>
+
+        <TextView
+            android:id="@+id/bev_priceField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="price field"
+            android:fontFamily="sans-serif"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#AEB6BD"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="">
+
+        <TextView
+            android:id="@+id/bev_quantityField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/quantity_txt_size"
+            tools:text="0 "
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="@dimen/activity_vertical_margin"/>
+
+        <Button
+            android:id="@+id/bev_sellBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="@string/btn_sell_1" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
