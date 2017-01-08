@@ -1,20 +1,30 @@
 package com.example.android.beverageinventory;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.beverageinventory.data.ProductDbHelper;
+
 public class MainActivity extends AppCompatActivity {
 
     private String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private ProductDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDbHelper = new ProductDbHelper(this);
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
     }
 
     @Override
