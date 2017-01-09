@@ -17,10 +17,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!--product image-->
-        <ImageView
-            android:layout_width="@dimen/pic_width"
-            android:layout_height="@dimen/pic_height" />
+        <!--image field-->
+        <RelativeLayout
+            android:id="@+id/image_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!--最底层-->
+            <View
+                android:layout_width="@dimen/pic_width"
+                android:layout_height="@dimen/pic_height"
+                android:background="#E0E0E0">
+            </View>
+
+            <!--中间层-->
+            <ImageView
+                android:layout_width="@dimen/pic_width"
+                android:layout_height="@dimen/pic_height" />
+
+            <!--最上层-->
+            <TextView
+                android:layout_width="@dimen/pic_width"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/pic_hint"
+                android:textColor="#000000"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"/>
+
+
+
+        </RelativeLayout>
 
         <!--name, price and quantity-->
         <LinearLayout

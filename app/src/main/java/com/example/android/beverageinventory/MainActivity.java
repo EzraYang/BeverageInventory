@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.beverageinventory.data.ProductContract;
@@ -29,9 +31,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ListView productListView = (ListView) findViewById(R.id.list);
         mAdapter = new ProductCursorAdapter(this, null);
         productListView.setAdapter(mAdapter);
+
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Uri uriOfClickedProduct = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
+                Intent openEditorAct = new Intent(MainActivity.this, InfoActivity.class);
+//                openEditorAct.setData(uriOfClickedPet);
+                startActivity(openEditorAct);
+            }
+        });
 
 //        测试database是否创建正确
         mDbHelper = new ProductDbHelper(this);
@@ -48,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         values.put(ProductContract.ProductEntry.COLUMN_PRICE, "30");
         values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, "100");
         values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, "David");
-        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "Unknow Uri");
+        // an empty pic uri for now
+        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "");
 
         db = mDbHelper.getWritableDatabase();
 

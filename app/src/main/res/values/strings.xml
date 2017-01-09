@@ -8,6 +8,7 @@
     <string name="action_add">Add</string>
 
     <!--in @InfoActivity-->
+    <string name="pic_hint">Tap to upload a picture</string>
     <string name="name">Name</string>
     <string name="price">Price</string>
     <string name="quantity">Quantity</string>
