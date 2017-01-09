@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ import com.example.android.beverageinventory.data.ProductContract;
  */
 
 public class ProductCursorAdapter extends CursorAdapter {
+
+    private int mQuantityInt;
 
     public ProductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
@@ -30,8 +33,8 @@ public class ProductCursorAdapter extends CursorAdapter {
         // find fields in view inflated from list_item
         TextView nameField = (TextView) view.findViewById(R.id.lstItm_nameField);
         TextView priceField = (TextView) view.findViewById(R.id.lstItm_priceField);
-        TextView quantityField = (TextView) view.findViewById(R.id.lstItm_quantityField);
-
+        final TextView quantityField = (TextView) view.findViewById(R.id.lstItm_quantityField);
+        Button sellBtn = (Button) view.findViewById(R.id.lstItm_sellBtn);
 
         // get column index for both name and breed by column name
         int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_NAME);
@@ -41,11 +44,26 @@ public class ProductCursorAdapter extends CursorAdapter {
         // get the String value of name and breed out from cursor
         String nameString = cursor.getString(nameColumnIndex);
         String priceString = cursor.getString(priceColumnIndex);
-        String quantityString = cursor.getString(quantityColumnIndex);
+//        final String quantityString = cursor.getString(quantityColumnIndex);
+        mQuantityInt = cursor.getInt(quantityColumnIndex);
 
         // set string value of name and breed to responding places in template
         nameField.setText(nameString);
         priceField.setText(priceString);
-        quantityField.setText(quantityString);
+        quantityField.setText(String.valueOf(mQuantityInt));
+
+        sellBtn.setFocusable(false);
+
+        // TODO: to make the sell btn actually modify database using update
+        // now it's only modify temporary storage
+        sellBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mQuantityInt > 1) {
+                    mQuantityInt -= 1;
+                    quantityField.setText(String.valueOf(mQuantityInt));
+                }
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.example.android.beverageinventory;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteDatabase db;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-////                Uri uriOfClickedProduct = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
-//                Intent openEditorAct = new Intent(MainActivity.this, InfoActivity.class);
-////                openEditorAct.setData(uriOfClickedPet);
-//                startActivity(openEditorAct);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(LOG_TAG, "recieving onItemClick");
+                Uri uriOfClickedProd = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, id);
+                Intent openInfoAct = new Intent(MainActivity.this, InfoActivity.class);
+                openInfoAct.setData(uriOfClickedProd);
+                startActivity(openInfoAct);
             }
         });
 

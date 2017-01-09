@@ -19,6 +19,8 @@
     <string name="decrease_btntxt">-</string>
     <string name="supplier">Supplier: </string>
     <string name="order_more">Order more</string>
+    <string name="title_add_prod">Add</string>
+    <string name="title_edit_prod">Edit</string>
 
     <!--in @menu_info-->
     <string name="action_save">Save</string>

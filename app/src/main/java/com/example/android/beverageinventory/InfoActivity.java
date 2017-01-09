@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static android.view.View.GONE;
 import static com.example.android.beverageinventory.data.ProductDbHelper.LOG_TAG;
 
 public class InfoActivity extends AppCompatActivity {
@@ -48,6 +50,8 @@ public class InfoActivity extends AppCompatActivity {
     private ImageView mImageField;
     private TextView mImageHint;
 
+    private Uri mUriOfClickedProd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +66,28 @@ public class InfoActivity extends AppCompatActivity {
         mDecreaseField = (TextView) findViewById(R.id.info_decreseField);
         mImageField = (ImageView) findViewById(R.id.info_imageField);
         mImageHint = (TextView) findViewById(R.id.info_imageHint);
+
+        mUriOfClickedProd = getIntent().getData();
+        // if CatalogActivity didnt send any uri
+        // then start InfoActivity in add mode
+        if (mUriOfClickedProd == null){
+            setTitle(R.string.title_add_prod);
+
+            //
+            LinearLayout updateField = (LinearLayout) findViewById(R.id.info_updateField);
+            updateField.setVisibility(GONE);
+
+            // Invalidate the options menu, so the "Delete" menu option can be hidden.
+            // (It doesn't make sense to delete a pet that hasn't been created yet.)
+            invalidateOptionsMenu();
+        }
+        // else CatalogActivity did send an uri
+        // start EditorActivity in edit mode
+        // and get details of clicked pet using CursorLoader
+        else {
+            setTitle(R.string.title_edit_prod);
+            Log.i(LOG_TAG, "uri of the clicked pet is: " + mUriOfClickedProd);
+        }
 
         // to select a image
         RelativeLayout imageField = (RelativeLayout) findViewById(R.id.image_field);

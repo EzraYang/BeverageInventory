@@ -118,48 +118,10 @@
 
     </LinearLayout>
 
-    <!--supplier and order more field-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="vertical">
-
-        <!--supplier header-->
-        <TextView
-            style="@style/header_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/supplier" />
-
-        <!--email address and order more btn -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <!--place to show supplier's email address-->
-            <EditText
-                android:id="@+id/info_supplierField"
-                style="@style/input_style"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2" />
-
-            <!--only shown when user click list item-->
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/order_more" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
     <!--update field-->
     <!--only shown when user click existing item-->
     <LinearLayout
+        android:id="@+id/info_updateField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -234,6 +196,47 @@
 
 
     </LinearLayout>
+
+    <!--supplier and order more field-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
+
+        <!--supplier header-->
+        <TextView
+            style="@style/header_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/supplier" />
+
+        <!--email address and order more btn -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!--place to show supplier's email address-->
+            <EditText
+                android:id="@+id/info_supplierField"
+                style="@style/input_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+
+            <!--only shown when user click list item-->
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/order_more" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
 </LinearLayout>

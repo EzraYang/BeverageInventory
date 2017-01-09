@@ -48,10 +48,10 @@
             tools:text="0 " />
 
         <Button
-            android:id="@+id/bev_sellBtn"
+            android:id="@+id/lstItm_sellBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/btn_sell_1" />
+            android:text="@string/btn_sell_1"/>
 
     </LinearLayout>
 
