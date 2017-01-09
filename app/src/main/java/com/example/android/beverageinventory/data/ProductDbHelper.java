@@ -29,6 +29,14 @@ public class ProductDbHelper extends SQLiteOpenHelper {
                 + ProductContract.ProductEntry.COLUMN_SUPPLIER + " TEXT, "
                 + ProductContract.ProductEntry.COLUMN_PICURI + " TEXT)";
         Log.i(LOG_TAG, "SQL_CREATE_ENTRIES String is " + SQL_CREATE_ENTRIES);
+//        This is copied from .schema:
+//        CREATE TABLE inventory (
+//                _id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                name TEXT NOT NULL,
+//                price INTEGER,
+//                quantity INTEGER,
+//                supplier TEXT,
+//                picture TEXT);
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 

@@ -53,7 +53,7 @@
             android:id="@+id/bev_sellBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            tools:text="@string/btn_sell_1" />
+            android:text="@string/btn_sell_1" />
 
     </LinearLayout>
 

@@ -1,13 +1,17 @@
 package com.example.android.beverageinventory;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.example.android.beverageinventory.data.ProductContract;
 import com.example.android.beverageinventory.data.ProductDbHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,15 +20,51 @@ public class MainActivity extends AppCompatActivity {
 
     private ProductDbHelper mDbHelper;
 
+    private ProductCursorAdapter mAdapter;
+
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ListView productListView = (ListView) findViewById(R.id.list);
+        mAdapter = new ProductCursorAdapter(this, null);
+        productListView.setAdapter(mAdapter);
+
+//        测试database是否创建正确
         mDbHelper = new ProductDbHelper(this);
 
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
+        insertDummyData();
+        displayDatabaseInfo();
+
+    }
+
+    private void insertDummyData(){
+        ContentValues values = new ContentValues();
+        values.put(ProductContract.ProductEntry.COLUMN_NAME, "Coffee");
+        values.put(ProductContract.ProductEntry.COLUMN_PRICE, "30");
+        values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, "100");
+        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, "David");
+        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "Unknow Uri");
+
+        db = mDbHelper.getWritableDatabase();
+
+        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+        Log.i("CatalogActivity", "New row id is " + newRowId);
+
+    }
+
+    private void displayDatabaseInfo(){
+
+        db = mDbHelper.getReadableDatabase();
+
+        // the simplest manual query
+        Cursor cursor = db.query(ProductContract.ProductEntry.TABLE_NAME,
+                null, null, null, null, null, null);
+        mAdapter.swapCursor(cursor);
     }
 
     @Override
