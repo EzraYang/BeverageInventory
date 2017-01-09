@@ -28,9 +28,9 @@ public class ProductCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // find fields in view inflated from list_item
-        TextView nameField = (TextView) view.findViewById(R.id.bev_nameField);
-        TextView priceField = (TextView) view.findViewById(R.id.bev_priceField);
-        TextView quantityField = (TextView) view.findViewById(R.id.bev_quantityField);
+        TextView nameField = (TextView) view.findViewById(R.id.lstItm_nameField);
+        TextView priceField = (TextView) view.findViewById(R.id.lstItm_priceField);
+        TextView quantityField = (TextView) view.findViewById(R.id.lstItm_quantityField);
 
 
         // get column index for both name and breed by column name

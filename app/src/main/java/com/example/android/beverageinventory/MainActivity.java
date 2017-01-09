@@ -39,20 +39,26 @@ public class MainActivity extends AppCompatActivity {
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Uri uriOfClickedProduct = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
-                Intent openEditorAct = new Intent(MainActivity.this, InfoActivity.class);
-//                openEditorAct.setData(uriOfClickedPet);
-                startActivity(openEditorAct);
+
+////                Uri uriOfClickedProduct = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
+//                Intent openEditorAct = new Intent(MainActivity.this, InfoActivity.class);
+////                openEditorAct.setData(uriOfClickedPet);
+//                startActivity(openEditorAct);
             }
         });
 
 //        测试database是否创建正确
         mDbHelper = new ProductDbHelper(this);
 
-
         insertDummyData();
         displayDatabaseInfo();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
     }
 
     private void insertDummyData(){

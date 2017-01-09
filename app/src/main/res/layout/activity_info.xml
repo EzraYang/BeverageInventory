@@ -4,12 +4,12 @@
     android:id="@+id/activity_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.android.beverageinventory.InfoActivity"
-    android:orientation="vertical">
+    tools:context="com.example.android.beverageinventory.InfoActivity">
 
     <!--image, name, price and quantity field-->
     <LinearLayout
@@ -27,25 +27,25 @@
             <View
                 android:layout_width="@dimen/pic_width"
                 android:layout_height="@dimen/pic_height"
-                android:background="#E0E0E0">
-            </View>
+                android:background="#E0E0E0"></View>
 
             <!--中间层-->
             <ImageView
+                android:id="@+id/info_imageField"
                 android:layout_width="@dimen/pic_width"
                 android:layout_height="@dimen/pic_height" />
 
             <!--最上层-->
+            <!--only shown when add a new product-->
             <TextView
+                android:id="@+id/info_imageHint"
                 android:layout_width="@dimen/pic_width"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/pic_hint"
-                android:textColor="#000000"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin"/>
-
-
+                android:text="@string/pic_hint"
+                android:textColor="#000000" />
 
         </RelativeLayout>
 
@@ -53,8 +53,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/activity_horizontal_margin">
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
 
             <!--name field-->
             <LinearLayout
@@ -64,13 +64,14 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/header_style"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
-                    style="@style/header_style"/>
+                    android:text="@string/name" />
 
                 <EditText
-                    android:layout_height="wrap_content"
-                    style="@style/input_style"/>
+                    android:id="@+id/info_nameField"
+                    style="@style/input_style"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -82,13 +83,14 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/header_style"
                     android:layout_height="wrap_content"
-                    android:text="@string/price"
-                    style="@style/header_style"/>
+                    android:text="@string/price" />
 
                 <EditText
-                    android:layout_height="wrap_content"
-                    style="@style/input_style"/>
+                    android:id="@+id/info_priceField"
+                    style="@style/input_style"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -100,14 +102,15 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:text="@string/quantity"
+                    android:id="@+id/textView"
                     style="@style/header_style"
-                    android:id="@+id/textView" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/quantity" />
 
                 <EditText
-                    android:layout_height="wrap_content"
-                    style="@style/input_style"/>
+                    android:id="@+id/info_quantityField"
+                    style="@style/input_style"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -115,94 +118,19 @@
 
     </LinearLayout>
 
-    <!--update field-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
-
-        <!--update header-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/update"
-            style="@style/header_style"/>
-
-        <!--increase by ... -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:layout_height="wrap_content"
-                android:text="@string/increase_by"
-                style="@style/sub_header_style"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                style="@style/input_style"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/increase_btntxt"/>
-
-        </LinearLayout>
-
-        <!--decrease by ... -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:layout_height="wrap_content"
-                android:text="@string/decrease_by"
-                style="@style/sub_header_style"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                style="@style/input_style"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/decrease_btntxt"/>
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
     <!--supplier and order more field-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
 
         <!--supplier header-->
         <TextView
+            style="@style/header_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/supplier"
-            style="@style/header_style"/>
+            android:text="@string/supplier" />
 
         <!--email address and order more btn -->
         <LinearLayout
@@ -212,19 +140,100 @@
 
             <!--place to show supplier's email address-->
             <EditText
+                android:id="@+id/info_supplierField"
+                style="@style/input_style"
                 android:layout_width="0dp"
-                android:layout_weight="2"
                 android:layout_height="wrap_content"
-                style="@style/input_style"/>
+                android:layout_weight="2" />
 
+            <!--only shown when user click list item-->
             <Button
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/order_more"/>
+                android:layout_weight="1"
+                android:text="@string/order_more" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <!--update field-->
+    <!--only shown when user click existing item-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
+
+        <!--update header-->
+        <TextView
+            style="@style/header_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update" />
+
+        <!--increase by ... -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/sub_header_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:text="@string/increase_by" />
+
+            <EditText
+                android:id="@+id/info_increseField"
+                style="@style/input_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/increase_btntxt" />
+
+        </LinearLayout>
+
+        <!--decrease by ... -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/sub_header_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:text="@string/decrease_by" />
+
+            <EditText
+                android:id="@+id/info_decreseField"
+                style="@style/input_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/decrease_btntxt" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
