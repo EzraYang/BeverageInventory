@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -70,20 +71,32 @@ public class MainActivity extends AppCompatActivity {
         // an empty pic uri for now
         values.put(ProductContract.ProductEntry.COLUMN_PICURI, "");
 
-        db = mDbHelper.getWritableDatabase();
-
-        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
-        Log.i("CatalogActivity", "New row id is " + newRowId);
+        Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
+        Log.i(LOG_TAG, "new row uri is " + newRowUri);
+//        // the direct insert to database
+//        db = mDbHelper.getWritableDatabase();
+//        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+//        Log.i("CatalogActivity", "New row id is " + newRowId);
 
     }
 
     private void displayDatabaseInfo(){
 
-        db = mDbHelper.getReadableDatabase();
+        String [] projection = {
+            ProductContract.ProductEntry._ID,
+            ProductContract.ProductEntry.COLUMN_NAME,
+            ProductContract.ProductEntry.COLUMN_PRICE,
+            ProductContract.ProductEntry.COLUMN_QUANTITY,
+            ProductContract.ProductEntry.COLUMN_SUPPLIER,
+            ProductContract.ProductEntry.COLUMN_PICURI
+        };
 
-        // the simplest manual query
-        Cursor cursor = db.query(ProductContract.ProductEntry.TABLE_NAME,
-                null, null, null, null, null, null);
+        Cursor cursor = getContentResolver().query(ProductContract.ProductEntry.CONTENT_URI , null, null, null, null, null);
+
+//        // the direct query to database
+//        db = mDbHelper.getReadableDatabase();
+//        Cursor cursor = db.query(ProductContract.ProductEntry.TABLE_NAME,
+//                null, null, null, null, null, null);
         mAdapter.swapCursor(cursor);
     }
 
