@@ -112,7 +112,7 @@ public class InfoActivity extends AppCompatActivity {
 
             // initialize 3 buttons that only appears in Edit mode
             mIncreaseBtn = (Button) findViewById(R.id.info_increaseBtn);
-            mDecreaseField = (Button) findViewById(R.id.info_decreaseBtn);
+            mDecreaseBtn = (Button) findViewById(R.id.info_decreaseBtn);
             mOrderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
 
             mIncreaseBtn.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +122,7 @@ public class InfoActivity extends AppCompatActivity {
                 }
             });
 
-            mDecreaseField.setOnClickListener(new View.OnClickListener() {
+            mDecreaseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     decreaseQuantity();
@@ -212,9 +212,9 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void increaseQuantity(){
-        String increament = mIncreseField.getText().toString().trim();
+        String incrementString = mIncreseField.getText().toString().trim();
 
-        if(increament.isEmpty() || increament.length() == 0 || increament.equals("") || increament == null)
+        if(incrementString.isEmpty() || incrementString.length() == 0 || incrementString.equals("") || incrementString == null)
         {
             //EditText is empty, make a toast
             // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
@@ -222,13 +222,17 @@ public class InfoActivity extends AppCompatActivity {
         else
         {
             //EditText is not empty
+            int incrementInt = Integer.parseInt(incrementString);
+            mQuantityInt += incrementInt;
+            mQuantityField.setText(String.valueOf(mQuantityInt));
+            mIncreseField.setText("");
         }
     }
 
     private void decreaseQuantity(){
-        String decreament = mDecreaseField.getText().toString().trim();
+        String decrementString = mDecreaseField.getText().toString().trim();
 
-        if(decreament.isEmpty() || decreament.length() == 0 || decreament.equals("") || decreament == null)
+        if(decrementString.isEmpty() || decrementString.length() == 0 || decrementString.equals("") || decrementString == null)
         {
             //EditText is empty, make a toast
             // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
@@ -236,6 +240,18 @@ public class InfoActivity extends AppCompatActivity {
         else
         {
             //EditText is not empty
+            int decrementInt = Integer.parseInt(decrementString);
+            int newQuantityInt = mQuantityInt - decrementInt;
+            if (newQuantityInt < 0){
+                Toast.makeText(this, getString(R.string.editor_decrement_failed),
+                        Toast.LENGTH_SHORT).show();
+                mDecreaseField.setText("");
+            }
+            else {
+                mQuantityInt = newQuantityInt;
+                mQuantityField.setText(String.valueOf(mQuantityInt));
+                mDecreaseField.setText("");
+            }
         }
     }
 
@@ -329,11 +345,11 @@ public class InfoActivity extends AppCompatActivity {
             // show a toast message depending on whether or not the insertion is successful
             if (newRowUri == null) {
                 // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_prod_failed),
+                Toast.makeText(this, getString(R.string.editor_insert_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_prod_successful),
+                Toast.makeText(this, getString(R.string.editor_insert_successful),
                         Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -343,11 +359,11 @@ public class InfoActivity extends AppCompatActivity {
 
             if (numOfRowUpdated == 1) {
                 // update succeed
-                Toast.makeText(this, getString(R.string.editor_update_prod_successful),
+                Toast.makeText(this, getString(R.string.editor_update_successful),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // update failed
-                Toast.makeText(this, getString(R.string.editor_update_prod_failed),
+                Toast.makeText(this, getString(R.string.editor_update_failed),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -362,10 +378,10 @@ public class InfoActivity extends AppCompatActivity {
             Log.i(LOG_TAG, numOfRowDel + "row(s) deleted");
 
             if (numOfRowDel == 1) {
-                Toast.makeText(this, getString(R.string.editor_delete_prod_successful),
+                Toast.makeText(this, getString(R.string.editor_delete_successful),
                         Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, getString(R.string.editor_delete_prod_failed),
+                Toast.makeText(this, getString(R.string.editor_delete_failed),
                         Toast.LENGTH_SHORT).show();
             }
         }

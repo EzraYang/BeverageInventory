@@ -22,13 +22,14 @@
     <string name="title_add_prod">Add</string>
     <string name="title_edit_prod">Edit</string>
 
-    <!--Toase in @InfoActivity-->
-    <string name="editor_delete_prod_successful">Product deleted</string>
-    <string name="editor_delete_prod_failed">Error with deleting product</string>
-    <string name="editor_insert_prod_successful">Product saved</string>
-    <string name="editor_insert_prod_failed">Error with saving product</string>
-    <string name="editor_update_prod_successful">Product updated</string>
-    <string name="editor_update_prod_failed">Error with updating product</string>
+    <!--Toasts in @InfoActivity-->
+    <string name="editor_delete_successful">Product deleted</string>
+    <string name="editor_delete_failed">Error with deleting product</string>
+    <string name="editor_insert_successful">Product saved</string>
+    <string name="editor_insert_failed">Error with saving product</string>
+    <string name="editor_update_successful">Product updated</string>
+    <string name="editor_update_failed">Error with updating product</string>
+    <string name="editor_decrement_failed">Negative quantity!</string>
 
 
     <!--in @menu_info-->
