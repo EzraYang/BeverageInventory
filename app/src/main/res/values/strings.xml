@@ -22,9 +22,18 @@
     <string name="title_add_prod">Add</string>
     <string name="title_edit_prod">Edit</string>
 
+    <!--Toase in @InfoActivity-->
+    <string name="editor_delete_prod_successful">Product deleted</string>
+    <string name="editor_delete_prod_failed">Error with deleting product</string>
+    <string name="editor_insert_prod_successful">Product saved</string>
+    <string name="editor_insert_prod_failed">Error with saving product</string>
+
+
     <!--in @menu_info-->
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
+
+
 
 
 </resources>

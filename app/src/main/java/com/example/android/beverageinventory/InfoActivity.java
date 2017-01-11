@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.beverageinventory.data.ProductContract;
 import com.example.android.beverageinventory.data.ProductDbHelper;
@@ -174,6 +175,8 @@ public class InfoActivity extends AppCompatActivity {
             mQuantityField.setText(String.valueOf(quantityInteger));
             mSupplierField.setText(supplierString);
             mImageField.setImageBitmap(getBitmapFromUri(picUri));
+
+            mImageHint.setVisibility(View.GONE);
         }
     }
 
@@ -196,11 +199,12 @@ public class InfoActivity extends AppCompatActivity {
                 saveProduct();
                 finish();
                 return true;
-//            // Respond to a click on the "Delete" menu option
-//            case R.id.action_delete:
-//                // Do nothing for now
-//                showDeleteConfirmationDialog();
-//                return true;
+            // Respond to a click on the "Delete" menu option
+            // can only be called from edit mode
+            case R.id.action_delete:
+                deleteProduct();
+                finish();
+                return true;
 //            // Respond to a click on the "Up" arrow button in the app bar
 //            case android.R.id.home:
 //                // If the pet hasn't changed, continue with navigating up to parent activity
@@ -253,11 +257,45 @@ public class InfoActivity extends AppCompatActivity {
         if (mUriOfClickedProd == null){
             Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
             Log.i("EditorActivity", "New row uri is" + newRowUri);
+
+            // show a toast message depending on whether or not the insertion is successful
+            if (newRowUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_insert_prod_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_insert_prod_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
         } else {
             // update the prod
         }
 
         long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
+    }
+
+    private void deleteProduct(){
+        // confirming delePet called from editor mode
+        if (mUriOfClickedProd != null) {
+            int numOfRowDel = getContentResolver().delete(mUriOfClickedProd, null, null);
+            Log.i(LOG_TAG, numOfRowDel + "row(s) deleted");
+
+            if (numOfRowDel == 1) {
+                Toast.makeText(this, getString(R.string.editor_delete_prod_successful),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_delete_prod_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        // not in edit mode
+        else {
+            Log.i(LOG_TAG, "Sth wrong with callling deletePet");
+        }
+
     }
 
 
@@ -294,7 +332,7 @@ public class InfoActivity extends AppCompatActivity {
                 Log.i(LOG_TAG, "Uri: " + mUriOfUploadedPic.toString());
 
                 mImageField.setImageBitmap(getBitmapFromUri(mUriOfUploadedPic));
-                mImageHint.setVisibility(View.INVISIBLE);
+                mImageHint.setVisibility(View.GONE);
             }
         } else if (requestCode == SEND_MAIL_REQUEST && resultCode == Activity.RESULT_OK) {
 

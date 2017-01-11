@@ -184,8 +184,26 @@ public class ProductProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // Get writeable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            // only offer single-deletion
+            case PROD_SINGLE:
+                // Delete a single row given by the ID in the URI
+                selection = ProductContract.ProductEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
+                // this will always be 1
+                int numOfDelRow = database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return numOfDelRow;
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 
     @Nullable
