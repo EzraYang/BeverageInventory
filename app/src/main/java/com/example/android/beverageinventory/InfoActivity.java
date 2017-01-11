@@ -3,6 +3,7 @@ package com.example.android.beverageinventory;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -71,22 +73,30 @@ public class InfoActivity extends AppCompatActivity {
         // if CatalogActivity didnt send any uri
         // then start InfoActivity in add mode
         if (mUriOfClickedProd == null){
+            Log.i(LOG_TAG, "uri of the clicked prod is null" );
             setTitle(R.string.title_add_prod);
 
-            //
+            // hide the update quantity field
             LinearLayout updateField = (LinearLayout) findViewById(R.id.info_updateField);
             updateField.setVisibility(GONE);
+
+            // hide the ORDER MORE button
+            Button orderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
+            orderMoreBtn.setVisibility(GONE);
 
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
             // (It doesn't make sense to delete a pet that hasn't been created yet.)
             invalidateOptionsMenu();
         }
-        // else CatalogActivity did send an uri
-        // start EditorActivity in edit mode
-        // and get details of clicked pet using CursorLoader
+        // else MainActivity did send an uri
+        // start InfoActivity in edit mode
+        // and get details of clicked product
         else {
             setTitle(R.string.title_edit_prod);
-            Log.i(LOG_TAG, "uri of the clicked pet is: " + mUriOfClickedProd);
+            Log.i(LOG_TAG, "uri of the clicked product is: " + mUriOfClickedProd);
+
+            // fetch info about this prod and display it
+            fetchProdInfo();
         }
 
         // to select a image
@@ -99,6 +109,76 @@ public class InfoActivity extends AppCompatActivity {
         });
     }
 
+//  methods below are called only in ADD mode
+    /**
+     * This method is called after invalidateOptionsMenu(), so that the
+     * menu can be updated (some menu items can be hidden or made visible).
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new product, hide the "Delete" menu item.
+        if (mUriOfClickedProd == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
+    }
+
+
+// methods below are called only in EDIT mode
+    private void fetchProdInfo(){
+        // select all column
+        String [] projection = {
+                ProductContract.ProductEntry._ID,
+                ProductContract.ProductEntry.COLUMN_NAME,
+                ProductContract.ProductEntry.COLUMN_PRICE,
+                ProductContract.ProductEntry.COLUMN_QUANTITY,
+                ProductContract.ProductEntry.COLUMN_SUPPLIER,
+                ProductContract.ProductEntry.COLUMN_PICURI
+        };
+
+        Cursor cursorOfClkProd = getContentResolver().query(mUriOfClickedProd, projection,
+                null, null, null);
+
+        // Bail out early if the cursor is null or there is less than 1 row in the cursor
+        if (cursorOfClkProd == null || cursorOfClkProd.getCount() < 1){
+            return;
+        }
+
+        // by default, the return cursor is at -1 row (the header row),
+        // we have to move it to the 1st row
+        // cursor.moveToFirst() return a boolean indicating whether the move is success or not
+        if (cursorOfClkProd.moveToFirst()){
+            // get column id for 4 columns needed
+            int nameColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_NAME);
+            int priceColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRICE);
+            int quantityColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_QUANTITY);
+            int supplierColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_SUPPLIER);
+            int picuriColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_PICURI);
+
+            // retrieve responding data according to column ids
+            String nameString = cursorOfClkProd.getString(nameColumnIndex);
+            Integer priceInteger = cursorOfClkProd.getInt(priceColumnIndex);
+            Integer quantityInteger = cursorOfClkProd.getInt(quantityColumnIndex);
+            String supplierString = cursorOfClkProd.getString(supplierColumnIndex);
+            String picUriString = cursorOfClkProd.getString(picuriColumnIndex);
+
+            Uri picUri = Uri.parse(picUriString);
+
+            // update UI
+            mNameField.setText(nameString);
+            mPriceField.setText(String.valueOf(priceInteger));
+            mQuantityField.setText(String.valueOf(quantityInteger));
+            mSupplierField.setText(supplierString);
+            mImageField.setImageBitmap(getBitmapFromUri(picUri));
+        }
+    }
+
+
+// methods below are called in BOTH ADD and EDIT mode
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -170,15 +250,18 @@ public class InfoActivity extends AppCompatActivity {
         ProductDbHelper mDbHelper = new ProductDbHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        if (mUriOfClickedProd == null){
+            Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
+            Log.i("EditorActivity", "New row uri is" + newRowUri);
+        } else {
+            // update the prod
+        }
+
         long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
     }
 
 
-
-    /**
-     * I just take these 3 methods as blackbox
-     * don't know anything bout how things work
-     */
+//  methods below are ones to manipulate pic uploading and get pic uri
     // method to open image selector
     private void openImageSelector() {
         Intent intent;
@@ -224,9 +307,21 @@ public class InfoActivity extends AppCompatActivity {
         if (uri == null || uri.toString().isEmpty())
             return null;
 
-        // Get the dimensions of the View
-        int targetW = mImageField.getWidth();
-        int targetH = mImageField.getHeight();
+        // origin method
+//         Get the dimensions of the View
+//        int targetW = mImageField.getWidth();
+//        int targetH = mImageField.getHeight();
+
+        // method 1 , force mesure
+//        mImageField.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//        int targetW = mImageField.getMeasuredWidth();
+//        int targetH = mImageField.getMeasuredHeight();
+
+        // method 2, manually set width and height
+        // ok this works, though not best solution
+        int targetW = 120;
+        int targetH = 120;
+        Log.i(LOG_TAG, "targetW is " + targetW + "; targetH is " + targetH);
 
         InputStream input = null;
         try {

@@ -1,7 +1,6 @@
 package com.example.android.beverageinventory;
 
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        测试database是否创建正确
-        mDbHelper = new ProductDbHelper(this);
+////        测试database是否创建正确
+//        mDbHelper = new ProductDbHelper(this);
 
-        insertDummyData();
+//        insertDummyData();
         displayDatabaseInfo();
 
     }
@@ -64,23 +63,23 @@ public class MainActivity extends AppCompatActivity {
         displayDatabaseInfo();
     }
 
-    private void insertDummyData(){
-        ContentValues values = new ContentValues();
-        values.put(ProductContract.ProductEntry.COLUMN_NAME, "Coffee");
-        values.put(ProductContract.ProductEntry.COLUMN_PRICE, "30");
-        values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, "100");
-        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, "David");
-        // an empty pic uri for now
-        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "");
-
-        Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
-        Log.i(LOG_TAG, "new row uri is " + newRowUri);
-//        // the direct insert to database
-//        db = mDbHelper.getWritableDatabase();
-//        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
-//        Log.i("CatalogActivity", "New row id is " + newRowId);
-
-    }
+//    private void insertDummyData(){
+//        ContentValues values = new ContentValues();
+//        values.put(ProductContract.ProductEntry.COLUMN_NAME, "Coffee");
+//        values.put(ProductContract.ProductEntry.COLUMN_PRICE, "30");
+//        values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, "100");
+//        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, "David");
+//        // an empty pic uri for now
+//        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "");
+//
+//        Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
+//        Log.i(LOG_TAG, "new row uri is " + newRowUri);
+////        // the direct insert to database
+////        db = mDbHelper.getWritableDatabase();
+////        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+////        Log.i("CatalogActivity", "New row id is " + newRowId);
+//
+//    }
 
     private void displayDatabaseInfo(){
 
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             ProductContract.ProductEntry.COLUMN_PICURI
         };
 
-        Cursor cursor = getContentResolver().query(ProductContract.ProductEntry.CONTENT_URI , null, null, null, null, null);
+        Cursor cursor = getContentResolver().query(ProductContract.ProductEntry.CONTENT_URI , projection, null, null, null, null);
 
 //        // the direct query to database
 //        db = mDbHelper.getReadableDatabase();

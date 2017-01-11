@@ -20,26 +20,26 @@
         <!--image field-->
         <RelativeLayout
             android:id="@+id/image_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="@dimen/pic_width"
+            android:layout_height="@dimen/pic_height">
 
             <!--最底层-->
             <View
-                android:layout_width="@dimen/pic_width"
-                android:layout_height="@dimen/pic_height"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="#E0E0E0"></View>
 
             <!--中间层-->
             <ImageView
                 android:id="@+id/info_imageField"
-                android:layout_width="@dimen/pic_width"
-                android:layout_height="@dimen/pic_height" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <!--最上层-->
             <!--only shown when add a new product-->
             <TextView
                 android:id="@+id/info_imageHint"
-                android:layout_width="@dimen/pic_width"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
@@ -227,6 +227,7 @@
 
             <!--only shown when user click list item-->
             <Button
+                android:id="@+id/info_orderMoreBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

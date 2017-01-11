@@ -36,7 +36,7 @@ public class ProductCursorAdapter extends CursorAdapter {
         final TextView quantityField = (TextView) view.findViewById(R.id.lstItm_quantityField);
         Button sellBtn = (Button) view.findViewById(R.id.lstItm_sellBtn);
 
-        // get column index for both name and breed by column name
+        // get column index for name, price and quantity by column name
         int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_NAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_QUANTITY);

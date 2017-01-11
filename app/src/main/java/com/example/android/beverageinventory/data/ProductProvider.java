@@ -127,8 +127,60 @@ public class ProductProvider extends ContentProvider {
 
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PROD_WHOLE:
+                return updateProd(uri, contentValues, selection, selectionArgs);
+            case PROD_SINGLE:
+                selection = ProductContract.ProductEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId((uri)))};
+                return updateProd(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    private int updateProd (Uri uri, ContentValues values, String selection, String[] selectionArgs){
+        // sanity check
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_NAME)){
+            String nameString = values.getAsString(ProductContract.ProductEntry.COLUMN_NAME);
+            if (nameString == null) {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRICE)) {
+            Integer priceInt = values.getAsInteger(ProductContract.ProductEntry.COLUMN_PRICE);
+            if (priceInt != null && priceInt < 0) {
+                throw new IllegalArgumentException("Negative price");
+            }
+        }
+
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_QUANTITY)) {
+            Integer quantityInt = values.getAsInteger(ProductContract.ProductEntry.COLUMN_QUANTITY);
+            if (quantityInt != null && quantityInt < 0) {
+                throw new IllegalArgumentException("Negative price");
+            }
+        }
+
+        // there's no constrain on supplier and uri info
+
+        // if values dont have any row, no need to bother mDbHelper to inflate a database
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Update the selected pets in the pets database table with the given ContentValues
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Return the number of rows that were affected
+
+        int count = db.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return count;
     }
 
     @Override
