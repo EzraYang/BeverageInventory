@@ -71,7 +71,8 @@
                 <EditText
                     android:id="@+id/info_nameField"
                     style="@style/input_style"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords"/>
 
             </LinearLayout>
 
@@ -90,7 +91,8 @@
                 <EditText
                     android:id="@+id/info_priceField"
                     style="@style/input_style"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
 
             </LinearLayout>
 
@@ -110,7 +112,8 @@
                 <EditText
                     android:id="@+id/info_quantityField"
                     style="@style/input_style"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
 
             </LinearLayout>
 
@@ -154,9 +157,11 @@
                 style="@style/input_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:inputType="number"/>
 
             <Button
+                android:id="@+id/info_increaseBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -184,9 +189,11 @@
                 style="@style/input_style"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:inputType="number"/>
 
             <Button
+                android:id="@+id/info_decreaseBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

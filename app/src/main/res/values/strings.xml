@@ -27,6 +27,8 @@
     <string name="editor_delete_prod_failed">Error with deleting product</string>
     <string name="editor_insert_prod_successful">Product saved</string>
     <string name="editor_insert_prod_failed">Error with saving product</string>
+    <string name="editor_update_prod_successful">Product updated</string>
+    <string name="editor_update_prod_failed">Error with updating product</string>
 
 
     <!--in @menu_info-->

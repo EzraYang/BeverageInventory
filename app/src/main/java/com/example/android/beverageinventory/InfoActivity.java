@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.beverageinventory.data.ProductContract;
-import com.example.android.beverageinventory.data.ProductDbHelper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,10 +33,13 @@ import static com.example.android.beverageinventory.data.ProductDbHelper.LOG_TAG
 
 public class InfoActivity extends AppCompatActivity {
 
+    private Uri mUriOfClickedProd;
+
     private static final int PICK_IMAGE_REQUEST = 0;
     private static final int SEND_MAIL_REQUEST = 1;
 
-    private Uri mUriOfUploadedPic;
+    private Uri mUriOfUploadedPic = null;
+    private Uri mUriOfOldPic;
 
 //    5 textviews responding to database value
     private TextView mNameField;
@@ -53,7 +55,14 @@ public class InfoActivity extends AppCompatActivity {
     private ImageView mImageField;
     private TextView mImageHint;
 
-    private Uri mUriOfClickedProd;
+//    3 buttons that only appears in edit mode
+    private Button mIncreaseBtn;
+    private Button mDecreaseBtn;
+    private Button mOrderMoreBtn;
+
+    private int mQuantityInt;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +74,6 @@ public class InfoActivity extends AppCompatActivity {
         mPriceField = (TextView) findViewById(R.id.info_priceField);
         mQuantityField = (TextView) findViewById(R.id.info_quantityField);
         mSupplierField = (TextView) findViewById(R.id.info_supplierField);
-        mIncreseField = (TextView) findViewById(R.id.info_increseField);
-        mDecreaseField = (TextView) findViewById(R.id.info_decreseField);
         mImageField = (ImageView) findViewById(R.id.info_imageField);
         mImageHint = (TextView) findViewById(R.id.info_imageHint);
 
@@ -98,6 +105,30 @@ public class InfoActivity extends AppCompatActivity {
 
             // fetch info about this prod and display it
             fetchProdInfo();
+
+            // initialize 2 incre/decrease textview that only appears in edit mode
+            mIncreseField = (EditText) findViewById(R.id.info_increseField);
+            mDecreaseField = (EditText) findViewById(R.id.info_decreseField);
+
+            // initialize 3 buttons that only appears in Edit mode
+            mIncreaseBtn = (Button) findViewById(R.id.info_increaseBtn);
+            mDecreaseField = (Button) findViewById(R.id.info_decreaseBtn);
+            mOrderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
+
+            mIncreaseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    increaseQuantity();
+                }
+            });
+
+            mDecreaseField.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    decreaseQuantity();
+                }
+            });
+
         }
 
         // to select a image
@@ -163,23 +194,50 @@ public class InfoActivity extends AppCompatActivity {
             // retrieve responding data according to column ids
             String nameString = cursorOfClkProd.getString(nameColumnIndex);
             Integer priceInteger = cursorOfClkProd.getInt(priceColumnIndex);
-            Integer quantityInteger = cursorOfClkProd.getInt(quantityColumnIndex);
+            mQuantityInt = cursorOfClkProd.getInt(quantityColumnIndex);
             String supplierString = cursorOfClkProd.getString(supplierColumnIndex);
             String picUriString = cursorOfClkProd.getString(picuriColumnIndex);
 
-            Uri picUri = Uri.parse(picUriString);
+            mUriOfOldPic = Uri.parse(picUriString);
 
             // update UI
             mNameField.setText(nameString);
             mPriceField.setText(String.valueOf(priceInteger));
-            mQuantityField.setText(String.valueOf(quantityInteger));
+            mQuantityField.setText(String.valueOf(mQuantityInt));
             mSupplierField.setText(supplierString);
-            mImageField.setImageBitmap(getBitmapFromUri(picUri));
+            mImageField.setImageBitmap(getBitmapFromUri(mUriOfOldPic));
 
             mImageHint.setVisibility(View.GONE);
         }
     }
 
+    private void increaseQuantity(){
+        String increament = mIncreseField.getText().toString().trim();
+
+        if(increament.isEmpty() || increament.length() == 0 || increament.equals("") || increament == null)
+        {
+            //EditText is empty, make a toast
+            // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
+        }
+        else
+        {
+            //EditText is not empty
+        }
+    }
+
+    private void decreaseQuantity(){
+        String decreament = mDecreaseField.getText().toString().trim();
+
+        if(decreament.isEmpty() || decreament.length() == 0 || decreament.equals("") || decreament == null)
+        {
+            //EditText is empty, make a toast
+            // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
+        }
+        else
+        {
+            //EditText is not empty
+        }
+    }
 
 // methods below are called in BOTH ADD and EDIT mode
     @Override
@@ -238,7 +296,17 @@ public class InfoActivity extends AppCompatActivity {
         String priceString = mPriceField.getText().toString().trim();
         String quantityString = mQuantityField.getText().toString().trim();
         String supplierString = mSupplierField.getText().toString().trim();
-        String uriString = mUriOfUploadedPic.toString();
+
+        String uriString;
+        // if it's in Add mode, user upload a new pic
+        // or its in Edit mode, user update the pic
+        if (mUriOfUploadedPic != null){
+            uriString = mUriOfUploadedPic.toString();
+        }
+        // else it's in Edit mode, user didn't change pic
+        else {
+            uriString = mUriOfOldPic.toString();
+        }
 
         // TODO: sanity check
 
@@ -250,9 +318,9 @@ public class InfoActivity extends AppCompatActivity {
         value.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, supplierString);
         value.put(ProductContract.ProductEntry.COLUMN_PICURI, uriString);
 
-
-        ProductDbHelper mDbHelper = new ProductDbHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//        ProductDbHelper mDbHelper = new ProductDbHelper(this);
+//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (mUriOfClickedProd == null){
             Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
@@ -268,13 +336,23 @@ public class InfoActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.editor_insert_prod_successful),
                         Toast.LENGTH_SHORT).show();
             }
-
-
         } else {
             // update the prod
+            int numOfRowUpdated = getContentResolver().update(mUriOfClickedProd, value, null, null);
+            Log.i(LOG_TAG, numOfRowUpdated + "rows updated");
+
+            if (numOfRowUpdated == 1) {
+                // update succeed
+                Toast.makeText(this, getString(R.string.editor_update_prod_successful),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // update failed
+                Toast.makeText(this, getString(R.string.editor_update_prod_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
 
-        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
+//        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
     }
 
     private void deleteProduct(){

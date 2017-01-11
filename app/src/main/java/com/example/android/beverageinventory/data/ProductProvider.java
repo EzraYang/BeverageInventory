@@ -125,13 +125,11 @@ public class ProductProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, newRowId);
     }
 
-
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case PROD_WHOLE:
-                return updateProd(uri, contentValues, selection, selectionArgs);
+            // only offer single-updation
             case PROD_SINGLE:
                 selection = ProductContract.ProductEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId((uri)))};
@@ -146,7 +144,7 @@ public class ProductProvider extends ContentProvider {
         if (values.containsKey(ProductContract.ProductEntry.COLUMN_NAME)){
             String nameString = values.getAsString(ProductContract.ProductEntry.COLUMN_NAME);
             if (nameString == null) {
-                throw new IllegalArgumentException("Pet requires a name");
+                throw new IllegalArgumentException("Product requires a name");
             }
         }
 
