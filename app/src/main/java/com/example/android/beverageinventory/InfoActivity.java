@@ -61,6 +61,8 @@ public class InfoActivity extends AppCompatActivity {
     private Button mOrderMoreBtn;
 
     private int mQuantityInt;
+    private String mNameString;
+    private String mSupplierString;
 
 
 
@@ -129,6 +131,13 @@ public class InfoActivity extends AppCompatActivity {
                 }
             });
 
+            mOrderMoreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    orderMore();
+                }
+            });
+
         }
 
         // to select a image
@@ -192,19 +201,19 @@ public class InfoActivity extends AppCompatActivity {
             int picuriColumnIndex = cursorOfClkProd.getColumnIndex(ProductContract.ProductEntry.COLUMN_PICURI);
 
             // retrieve responding data according to column ids
-            String nameString = cursorOfClkProd.getString(nameColumnIndex);
+            mNameString = cursorOfClkProd.getString(nameColumnIndex);
             Integer priceInteger = cursorOfClkProd.getInt(priceColumnIndex);
             mQuantityInt = cursorOfClkProd.getInt(quantityColumnIndex);
-            String supplierString = cursorOfClkProd.getString(supplierColumnIndex);
+            mSupplierString = cursorOfClkProd.getString(supplierColumnIndex);
             String picUriString = cursorOfClkProd.getString(picuriColumnIndex);
 
             mUriOfOldPic = Uri.parse(picUriString);
 
             // update UI
-            mNameField.setText(nameString);
+            mNameField.setText(mNameString);
             mPriceField.setText(String.valueOf(priceInteger));
             mQuantityField.setText(String.valueOf(mQuantityInt));
-            mSupplierField.setText(supplierString);
+            mSupplierField.setText(mSupplierString);
             mImageField.setImageBitmap(getBitmapFromUri(mUriOfOldPic));
 
             mImageHint.setVisibility(View.GONE);
@@ -217,7 +226,8 @@ public class InfoActivity extends AppCompatActivity {
         if(incrementString.isEmpty() || incrementString.length() == 0 || incrementString.equals("") || incrementString == null)
         {
             //EditText is empty, make a toast
-            // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
+            Toast.makeText(this, getString(R.string.editor_enter_num),
+                    Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -235,7 +245,8 @@ public class InfoActivity extends AppCompatActivity {
         if(decrementString.isEmpty() || decrementString.length() == 0 || decrementString.equals("") || decrementString == null)
         {
             //EditText is empty, make a toast
-            // TODO: MAKE A TOAST TO SUGGEST USER ENTER NUMBER
+            Toast.makeText(this, getString(R.string.editor_enter_num),
+                    Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -254,6 +265,30 @@ public class InfoActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void orderMore(){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+        emailIntent.setType("message/rfc822");
+
+//        emailIntent.setType("text/plain");
+
+
+        String mailBody = "Hi " + mSupplierString + "! \n" +
+                            "I'd like to order more of " + mNameString + "!\n" +
+                            "Thank you!";
+        emailIntent.putExtra(Intent.EXTRA_TEXT, mailBody);
+
+        // version 1
+//        startActivity(emailIntent);
+//        Log.i(LOG_TAG, "startActivity called");
+
+        // version 2
+//        startActivityForResult(emailIntent, REQUEST_SEND_MAIL);
+
+        startActivity(Intent.createChooser(emailIntent, "Send e-mail to"));
+    }
+
 
 // methods below are called in BOTH ADD and EDIT mode
     @Override

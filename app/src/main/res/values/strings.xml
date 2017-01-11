@@ -30,6 +30,7 @@
     <string name="editor_update_successful">Product updated</string>
     <string name="editor_update_failed">Error with updating product</string>
     <string name="editor_decrement_failed">Negative quantity!</string>
+    <string name="editor_enter_num">Please enter a number!</string>
 
 
     <!--in @menu_info-->
