@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.beverageinventory.data.ProductContract;
 import com.example.android.beverageinventory.data.ProductDbHelper;
@@ -38,11 +39,15 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ProductCursorAdapter(this, null);
         productListView.setAdapter(mAdapter);
 
+        TextView emptyView = (TextView) findViewById(R.id.empty_view);
+        productListView.setEmptyView(emptyView);
+
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(LOG_TAG, "recieving onItemClick");
                 Uri uriOfClickedProd = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, id);
+
+                // open @InfoActivity in edit mode with item uri
                 Intent openInfoAct = new Intent(MainActivity.this, InfoActivity.class);
                 openInfoAct.setData(uriOfClickedProd);
                 startActivity(openInfoAct);
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayDatabaseInfo(){
 
         String [] projection = {
-            ProductContract.ProductEntry._ID,
+            ProductContract.ProductEntry.COLUMN_ID,
             ProductContract.ProductEntry.COLUMN_NAME,
             ProductContract.ProductEntry.COLUMN_PRICE,
             ProductContract.ProductEntry.COLUMN_QUANTITY,

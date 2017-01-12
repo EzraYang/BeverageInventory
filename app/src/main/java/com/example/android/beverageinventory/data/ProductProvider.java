@@ -66,7 +66,7 @@ public class ProductProvider extends ContentProvider {
                 cursor = database.query(ProductContract.ProductEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case PROD_SINGLE:
-                selection = ProductContract.ProductEntry._ID + "=?";
+                selection = ProductContract.ProductEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(ProductContract.ProductEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
@@ -131,7 +131,7 @@ public class ProductProvider extends ContentProvider {
         switch (match) {
             // only offer single-updation
             case PROD_SINGLE:
-                selection = ProductContract.ProductEntry._ID + "=?";
+                selection = ProductContract.ProductEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId((uri)))};
                 return updateProd(uri, contentValues, selection, selectionArgs);
             default:
@@ -191,7 +191,7 @@ public class ProductProvider extends ContentProvider {
             // only offer single-deletion
             case PROD_SINGLE:
                 // Delete a single row given by the ID in the URI
-                selection = ProductContract.ProductEntry._ID + "=?";
+                selection = ProductContract.ProductEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
                 // this will always be 1

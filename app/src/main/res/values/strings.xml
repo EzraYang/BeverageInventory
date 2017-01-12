@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Beverage Inventory</string>
 
+    <!--in@activity_main.xml-->
+    <string name="empty_txt">Click the icon on top-right corner to add a product.</string>
+
+
     <!--in @list_item-->
     <string name="btn_sell_1">sell 1</string>
 
@@ -12,9 +16,9 @@
     <string name="name">Name</string>
     <string name="price">Price</string>
     <string name="quantity">Quantity</string>
-    <string name="update">Update: </string>
-    <string name="increase_by">Increase quantity by</string>
-    <string name="decrease_by">Decrease quantity by</string>
+    <string name="update">Update quantity: </string>
+    <string name="increase_by">Increase by</string>
+    <string name="decrease_by">Decrease by</string>
     <string name="increase_btntxt">+</string>
     <string name="decrease_btntxt">-</string>
     <string name="supplier">Supplier: </string>
@@ -29,9 +33,13 @@
     <string name="editor_insert_failed">Error with saving product</string>
     <string name="editor_update_successful">Product updated</string>
     <string name="editor_update_failed">Error with updating product</string>
+    <string name="editor_update_nothing">Nothing changed</string>
     <string name="editor_decrement_failed">Negative quantity!</string>
     <string name="editor_enter_num">Please enter a number!</string>
+    <string name="editor_insert_nothing">Nothing inserted</string>
 
+    <!--Toasts in @ListItem-->
+    <string name="delete_reminder">Click on the product then delete it</string>
 
     <!--in @menu_info-->
     <string name="action_save">Save</string>

@@ -10,9 +10,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +41,7 @@ public class InfoActivity extends AppCompatActivity {
     private static final int SEND_MAIL_REQUEST = 1;
 
     private Uri mUriOfUploadedPic = null;
-    private Uri mUriOfOldPic;
+    private Uri mUriOfOldPic = null;
 
 //    5 textviews responding to database value
     private TextView mNameField;
@@ -65,6 +67,15 @@ public class InfoActivity extends AppCompatActivity {
     private String mSupplierString;
 
 
+    private boolean mProdHasChanged = false;
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mProdHasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +127,14 @@ public class InfoActivity extends AppCompatActivity {
             mIncreaseBtn = (Button) findViewById(R.id.info_increaseBtn);
             mDecreaseBtn = (Button) findViewById(R.id.info_decreaseBtn);
             mOrderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
+
+            // attach onTouchListener to check if prod is updated
+            mNameField.setOnTouchListener(mTouchListener);
+            mPriceField.setOnTouchListener(mTouchListener);
+            mQuantityField.setOnTouchListener(mTouchListener);
+            mSupplierField.setOnTouchListener(mTouchListener);
+            mIncreaseBtn.setOnTouchListener(mTouchListener);
+            mDecreaseBtn.setOnTouchListener(mTouchListener);
 
             mIncreaseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -173,7 +192,7 @@ public class InfoActivity extends AppCompatActivity {
     private void fetchProdInfo(){
         // select all column
         String [] projection = {
-                ProductContract.ProductEntry._ID,
+                ProductContract.ProductEntry.COLUMN_ID,
                 ProductContract.ProductEntry.COLUMN_NAME,
                 ProductContract.ProductEntry.COLUMN_PRICE,
                 ProductContract.ProductEntry.COLUMN_QUANTITY,
@@ -207,16 +226,19 @@ public class InfoActivity extends AppCompatActivity {
             mSupplierString = cursorOfClkProd.getString(supplierColumnIndex);
             String picUriString = cursorOfClkProd.getString(picuriColumnIndex);
 
-            mUriOfOldPic = Uri.parse(picUriString);
-
             // update UI
             mNameField.setText(mNameString);
             mPriceField.setText(String.valueOf(priceInteger));
             mQuantityField.setText(String.valueOf(mQuantityInt));
             mSupplierField.setText(mSupplierString);
-            mImageField.setImageBitmap(getBitmapFromUri(mUriOfOldPic));
 
-            mImageHint.setVisibility(View.GONE);
+            if(picUriString.isEmpty() || picUriString.length() == 0 || picUriString.equals("") || picUriString == null){
+                // do nothing
+            } else {
+                mUriOfOldPic = Uri.parse(picUriString);
+                mImageField.setImageBitmap(getBitmapFromUri(mUriOfOldPic));
+                mImageHint.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -271,22 +293,33 @@ public class InfoActivity extends AppCompatActivity {
 
         emailIntent.setType("message/rfc822");
 
-//        emailIntent.setType("text/plain");
-
-
         String mailBody = "Hi " + mSupplierString + "! \n" +
                             "I'd like to order more of " + mNameString + "!\n" +
                             "Thank you!";
         emailIntent.putExtra(Intent.EXTRA_TEXT, mailBody);
 
-        // version 1
-//        startActivity(emailIntent);
-//        Log.i(LOG_TAG, "startActivity called");
-
-        // version 2
-//        startActivityForResult(emailIntent, REQUEST_SEND_MAIL);
-
         startActivity(Intent.createChooser(emailIntent, "Send e-mail to"));
+    }
+
+    private void deleteProduct(){
+        // confirming delePet called from editor mode
+        if (mUriOfClickedProd != null) {
+            int numOfRowDel = getContentResolver().delete(mUriOfClickedProd, null, null);
+            Log.i(LOG_TAG, numOfRowDel + "row(s) deleted");
+
+            if (numOfRowDel == 1) {
+                Toast.makeText(this, getString(R.string.editor_delete_successful),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_delete_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        // not in edit mode
+        else {
+            Log.i(LOG_TAG, "Sth wrong with callling deletePet");
+        }
+
     }
 
 
@@ -318,7 +351,7 @@ public class InfoActivity extends AppCompatActivity {
 //            case android.R.id.home:
 //                // If the pet hasn't changed, continue with navigating up to parent activity
 //                // which is the {@link CatalogActivity}.
-//                if (!mPetHasChanged) {
+//                if (!mProdHasChanged) {
 //                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
 //                    return true;
 //                }
@@ -348,18 +381,37 @@ public class InfoActivity extends AppCompatActivity {
         String quantityString = mQuantityField.getText().toString().trim();
         String supplierString = mSupplierField.getText().toString().trim();
 
-        String uriString;
-        // if it's in Add mode, user upload a new pic
-        // or its in Edit mode, user update the pic
-        if (mUriOfUploadedPic != null){
-            uriString = mUriOfUploadedPic.toString();
-        }
-        // else it's in Edit mode, user didn't change pic
-        else {
-            uriString = mUriOfOldPic.toString();
+        // user may accidentally hit save button with nothing input, don't save it!
+        if ( mUriOfClickedProd == null
+                && TextUtils.isEmpty(nameString)
+                && TextUtils.isEmpty(priceString)
+                && TextUtils.isEmpty(quantityString)
+                && TextUtils.isEmpty(supplierString)
+                && mUriOfUploadedPic == null ) {
+            Toast.makeText(this, getString(R.string.editor_insert_nothing),
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // TODO: sanity check
+        String uriString;
+        if (mUriOfUploadedPic != null) {
+            // new contentvalue should use uri of newly uploaded pic
+            // no matter in Add mode or in Edit mode
+            uriString = mUriOfUploadedPic.toString();
+        } else {
+            // Add mode, no pic uploaded
+            if (mUriOfClickedProd == null){
+                uriString = "";
+            }
+            // Edit mode, no pic uploaded, and there is an old pic
+            else if (mUriOfOldPic != null && mUriOfClickedProd != null){
+                uriString = mUriOfOldPic.toString();
+            }
+            // Edit mode, no pic uploaded, and no old pic as well
+            else {
+                uriString = "";
+            }
+        }
 
         // Create a new map of values, where column names are the keys
         ContentValues value = new ContentValues();
@@ -388,43 +440,28 @@ public class InfoActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         } else {
-            // update the prod
-            int numOfRowUpdated = getContentResolver().update(mUriOfClickedProd, value, null, null);
-            Log.i(LOG_TAG, numOfRowUpdated + "rows updated");
+            if (mProdHasChanged){
+                // update the prod
+                int numOfRowUpdated = getContentResolver().update(mUriOfClickedProd, value, null, null);
+                Log.i(LOG_TAG, numOfRowUpdated + "rows updated");
 
-            if (numOfRowUpdated == 1) {
-                // update succeed
-                Toast.makeText(this, getString(R.string.editor_update_successful),
-                        Toast.LENGTH_SHORT).show();
+                if (numOfRowUpdated == 1) {
+                    // update succeed
+                    Toast.makeText(this, getString(R.string.editor_update_successful),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // update failed
+                    Toast.makeText(this, getString(R.string.editor_update_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
             } else {
-                // update failed
-                Toast.makeText(this, getString(R.string.editor_update_failed),
+                // user didn't touch any changable field
+                Toast.makeText(this, getString(R.string.editor_update_nothing),
                         Toast.LENGTH_SHORT).show();
             }
         }
 
 //        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
-    }
-
-    private void deleteProduct(){
-        // confirming delePet called from editor mode
-        if (mUriOfClickedProd != null) {
-            int numOfRowDel = getContentResolver().delete(mUriOfClickedProd, null, null);
-            Log.i(LOG_TAG, numOfRowDel + "row(s) deleted");
-
-            if (numOfRowDel == 1) {
-                Toast.makeText(this, getString(R.string.editor_delete_successful),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, getString(R.string.editor_delete_failed),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        // not in edit mode
-        else {
-            Log.i(LOG_TAG, "Sth wrong with callling deletePet");
-        }
-
     }
 
 

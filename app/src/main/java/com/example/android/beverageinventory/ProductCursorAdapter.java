@@ -1,13 +1,17 @@
 package com.example.android.beverageinventory;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.beverageinventory.data.ProductContract;
 
@@ -16,8 +20,6 @@ import com.example.android.beverageinventory.data.ProductContract;
  */
 
 public class ProductCursorAdapter extends CursorAdapter {
-
-    private int mQuantityInt;
 
     public ProductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
@@ -29,39 +31,54 @@ public class ProductCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, final Cursor cursor) {
         // find fields in view inflated from list_item
         TextView nameField = (TextView) view.findViewById(R.id.lstItm_nameField);
         TextView priceField = (TextView) view.findViewById(R.id.lstItm_priceField);
         final TextView quantityField = (TextView) view.findViewById(R.id.lstItm_quantityField);
-        Button sellBtn = (Button) view.findViewById(R.id.lstItm_sellBtn);
+        final Button sellBtn = (Button) view.findViewById(R.id.lstItm_sellBtn);
 
-        // get column index for name, price and quantity by column name
+        // get column index for all columns by column name
+        int _idColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_ID);
         int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_NAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_QUANTITY);
 
-        // get the String value of name and breed out from cursor
+        // get name, price, quantity value to display on screen
         String nameString = cursor.getString(nameColumnIndex);
         String priceString = cursor.getString(priceColumnIndex);
-//        final String quantityString = cursor.getString(quantityColumnIndex);
-        mQuantityInt = cursor.getInt(quantityColumnIndex);
+        int quantityInt = cursor.getInt(quantityColumnIndex);
+        Log.i("CursorAdapter", "mQuantity is " + quantityInt);
 
-        // set string value of name and breed to responding places in template
+        // get supplier, pictureUri to prepare construction new content value
+        final int idInt = cursor.getInt(_idColumnIndex);
+
+        // set string value of name price and quantity to responding places in template
         nameField.setText(nameString);
         priceField.setText(priceString);
-        quantityField.setText(String.valueOf(mQuantityInt));
+        quantityField.setText(String.valueOf(quantityInt));
 
         sellBtn.setFocusable(false);
 
-        // TODO: to make the sell btn actually modify database using update
-        // now it's only modify temporary storage
+        // wrap quantityInt in a final array,
+        // so it can be both reached and modified from within onClick inner class
+        final int[] quantity = {new Integer(quantityInt)};
+
         sellBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mQuantityInt > 1) {
-                    mQuantityInt -= 1;
-                    quantityField.setText(String.valueOf(mQuantityInt));
+                if (quantity[0] > 1){
+                    quantity[0] -= 1;
+                    quantityField.setText(String.valueOf(quantity[0]));
+
+                    ContentValues values = new ContentValues();
+                    values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, quantity[0]);
+
+                    Uri uri = Uri.parse(ProductContract.ProductEntry.CONTENT_URI + "/" + idInt);
+                    // update居然可以只更改发生改变的column!!
+                    context.getContentResolver().update(uri, values,null, null);
+                } else {
+                    Toast.makeText(context, "Click on the product then delete it", Toast.LENGTH_SHORT).show();
                 }
             }
         });
