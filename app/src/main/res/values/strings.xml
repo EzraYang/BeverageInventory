@@ -7,6 +7,7 @@
 
     <!--in @list_item-->
     <string name="btn_sell_1">sell 1</string>
+    <string name="lstItm_price">Price:</string>
 
     <!--in @menu_main-->
     <string name="action_add">Add</string>
