@@ -46,7 +46,7 @@
     <string name="editor_update_nothing">Nothing changed</string>
     <string name="editor_decrement_failed">Negative quantity!</string>
     <string name="editor_enter_num">Please enter a number!</string>
-    <string name="editor_insert_nothing">Nothing inserted</string>
+    <string name="editor_lack_info">Please fill in all the information</string>
 
     <!--Toasts in @ListItem-->
     <string name="delete_reminder">Click on the product then delete it</string>

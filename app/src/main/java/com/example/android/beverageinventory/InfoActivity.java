@@ -64,6 +64,7 @@ public class InfoActivity extends AppCompatActivity {
     private String mSupplierString;
 
     private boolean mProdHasChanged = false;
+    private boolean mProdSaved = false;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -358,7 +359,9 @@ public class InfoActivity extends AppCompatActivity {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 saveProduct();
-                finish();
+                if (mProdSaved){
+                    finish();
+                }
                 return true;
             // Respond to a click on the "Delete" menu option
             // can only be called from edit mode
@@ -377,77 +380,78 @@ public class InfoActivity extends AppCompatActivity {
 
         // user may accidentally hit save button with nothing input, don't save it!
         if ( mUriOfClickedProd == null
-                && TextUtils.isEmpty(nameString)
+                && (TextUtils.isEmpty(nameString)
                 || TextUtils.isEmpty(priceString)
                 || TextUtils.isEmpty(quantityString)
                 || TextUtils.isEmpty(supplierString)
-                || mUriOfUploadedPic == null ) {
-            Toast.makeText(this, getString(R.string.editor_insert_nothing),
+                || mUriOfUploadedPic == null) ) {
+            Toast.makeText(this, getString(R.string.editor_lack_info),
                     Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String uriString;
-        if (mUriOfUploadedPic != null) {
-            // new contentvalue should use uri of newly uploaded pic
-            // no matter in Add mode or in Edit mode
-            uriString = mUriOfUploadedPic.toString();
-        } else {
-            // Add mode, no pic uploaded
-            if (mUriOfClickedProd == null){
-                uriString = "";
-            }
-            // Edit mode, no pic uploaded, and there is an old pic
-            else if (mUriOfOldPic != null && mUriOfClickedProd != null){
-                uriString = mUriOfOldPic.toString();
-            }
-            // Edit mode, no pic uploaded, and no old pic as well
-            else {
-                uriString = "";
-            }
-        }
-
-        // Create a new map of values, where column names are the keys
-        ContentValues value = new ContentValues();
-        value.put(ProductContract.ProductEntry.COLUMN_NAME, nameString);
-        value.put(ProductContract.ProductEntry.COLUMN_PRICE, priceString);
-        value.put(ProductContract.ProductEntry.COLUMN_QUANTITY, quantityString);
-        value.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, supplierString);
-        value.put(ProductContract.ProductEntry.COLUMN_PICURI, uriString);
-
-        if (mUriOfClickedProd == null){
-            Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
-            Log.i("EditorActivity", "New row uri is" + newRowUri);
-
-            // show a toast message depending on whether or not the insertion is successful
-            if (newRowUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_failed),
-                        Toast.LENGTH_SHORT).show();
+        } else{
+            String uriString;
+            if (mUriOfUploadedPic != null) {
+                // new contentvalue should use uri of newly uploaded pic
+                // no matter in Add mode or in Edit mode
+                uriString = mUriOfUploadedPic.toString();
             } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_successful),
-                        Toast.LENGTH_SHORT).show();
+                // Add mode, no pic uploaded
+                if (mUriOfClickedProd == null){
+                    uriString = "";
+                }
+                // Edit mode, no pic uploaded, and there is an old pic
+                else if (mUriOfOldPic != null && mUriOfClickedProd != null){
+                    uriString = mUriOfOldPic.toString();
+                }
+                // Edit mode, no pic uploaded, and no old pic as well
+                else {
+                    uriString = "";
+                }
             }
-        } else {
-            if (mProdHasChanged){
-                // update the prod
-                int numOfRowUpdated = getContentResolver().update(mUriOfClickedProd, value, null, null);
-                Log.i(LOG_TAG, numOfRowUpdated + "rows updated");
 
-                if (numOfRowUpdated == 1) {
-                    // update succeed
-                    Toast.makeText(this, getString(R.string.editor_update_successful),
+            // Create a new map of values, where column names are the keys
+            ContentValues value = new ContentValues();
+            value.put(ProductContract.ProductEntry.COLUMN_NAME, nameString);
+            value.put(ProductContract.ProductEntry.COLUMN_PRICE, priceString);
+            value.put(ProductContract.ProductEntry.COLUMN_QUANTITY, quantityString);
+            value.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, supplierString);
+            value.put(ProductContract.ProductEntry.COLUMN_PICURI, uriString);
+
+            if (mUriOfClickedProd == null){
+                Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
+                Log.i("EditorActivity", "New row uri is" + newRowUri);
+
+                // show a toast message depending on whether or not the insertion is successful
+                if (newRowUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, getString(R.string.editor_insert_failed),
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    // update failed
-                    Toast.makeText(this, getString(R.string.editor_update_failed),
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_insert_successful),
                             Toast.LENGTH_SHORT).show();
+                    mProdSaved = true;
                 }
             } else {
-                // user didn't touch any changable field
-                Toast.makeText(this, getString(R.string.editor_update_nothing),
-                        Toast.LENGTH_SHORT).show();
+                if (mProdHasChanged){
+                    // update the prod
+                    int numOfRowUpdated = getContentResolver().update(mUriOfClickedProd, value, null, null);
+                    Log.i(LOG_TAG, numOfRowUpdated + "rows updated");
+
+                    if (numOfRowUpdated == 1) {
+                        // update succeed
+                        Toast.makeText(this, getString(R.string.editor_update_successful),
+                                Toast.LENGTH_SHORT).show();
+                        mProdSaved = true;
+                    } else {
+                        // update failed
+                        Toast.makeText(this, getString(R.string.editor_update_failed),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // user didn't touch any changable field
+                    Toast.makeText(this, getString(R.string.editor_update_nothing),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
