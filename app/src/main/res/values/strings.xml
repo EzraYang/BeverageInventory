@@ -26,6 +26,15 @@
     <string name="order_more">Order more</string>
     <string name="title_add_prod">Add</string>
     <string name="title_edit_prod">Edit</string>
+    <!--delete confirmation dialoge-->
+    <string name="delete_dialog_msg">Delete this product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <!--unsaved changes comfirmation dialog-->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+
 
     <!--Toasts in @InfoActivity-->
     <string name="editor_delete_successful">Product deleted</string>
