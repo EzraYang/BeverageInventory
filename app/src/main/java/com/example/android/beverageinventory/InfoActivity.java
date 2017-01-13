@@ -287,11 +287,11 @@ public class InfoActivity extends AppCompatActivity {
         emailIntent.setType("message/rfc822");
 
         String mailBody = "Hi " + mSupplierString + "! \n" +
-                            "I'd like to order more of " + mNameString + "!\n" +
-                            "Thank you!";
+                            "\nI'd like to order more of " + mNameString + "!\n" +
+                            "\nThank you!";
         emailIntent.putExtra(Intent.EXTRA_TEXT, mailBody);
 
-        startActivity(Intent.createChooser(emailIntent, "Send e-mail to"));
+        startActivity(Intent.createChooser(emailIntent, "Send e-mail via"));
     }
 
     private void deleteProduct(){
