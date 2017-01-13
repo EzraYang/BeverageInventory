@@ -59,15 +59,9 @@ public class InfoActivity extends AppCompatActivity {
     private ImageView mImageField;
     private TextView mImageHint;
 
-//    3 buttons that only appears in edit mode
-    private Button mIncreaseBtn;
-    private Button mDecreaseBtn;
-    private Button mOrderMoreBtn;
-
     private int mQuantityInt;
     private String mNameString;
     private String mSupplierString;
-
 
     private boolean mProdHasChanged = false;
 
@@ -93,8 +87,7 @@ public class InfoActivity extends AppCompatActivity {
         mImageHint = (TextView) findViewById(R.id.info_imageHint);
 
         mUriOfClickedProd = getIntent().getData();
-        // if CatalogActivity didnt send any uri
-        // then start InfoActivity in add mode
+        // if CatalogActivity didnt send any uri then start InfoActivity in add mode
         if (mUriOfClickedProd == null){
             Log.i(LOG_TAG, "uri of the clicked prod is null" );
             setTitle(R.string.title_add_prod);
@@ -108,12 +101,10 @@ public class InfoActivity extends AppCompatActivity {
             orderMoreBtn.setVisibility(GONE);
 
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
-            // (It doesn't make sense to delete a pet that hasn't been created yet.)
             invalidateOptionsMenu();
         }
         // else MainActivity did send an uri
-        // start InfoActivity in edit mode
-        // and get details of clicked product
+        // start InfoActivity in edit mode, and get details of clicked product
         else {
             setTitle(R.string.title_edit_prod);
             Log.i(LOG_TAG, "uri of the clicked product is: " + mUriOfClickedProd);
@@ -126,9 +117,9 @@ public class InfoActivity extends AppCompatActivity {
             mDecreaseField = (EditText) findViewById(R.id.info_decreseField);
 
             // initialize 3 buttons that only appears in Edit mode
-            mIncreaseBtn = (Button) findViewById(R.id.info_increaseBtn);
-            mDecreaseBtn = (Button) findViewById(R.id.info_decreaseBtn);
-            mOrderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
+            Button mIncreaseBtn = (Button) findViewById(R.id.info_increaseBtn);
+            Button mDecreaseBtn = (Button) findViewById(R.id.info_decreaseBtn);
+            Button mOrderMoreBtn = (Button) findViewById(R.id.info_orderMoreBtn);
 
             // attach onTouchListener to check if prod is updated
             mNameField.setOnTouchListener(mTouchListener);
@@ -188,7 +179,6 @@ public class InfoActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
 // methods below are called only in EDIT mode
     private void fetchProdInfo(){
@@ -291,7 +281,7 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void orderMore(){
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
         emailIntent.setType("message/rfc822");
 
@@ -375,30 +365,6 @@ public class InfoActivity extends AppCompatActivity {
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
                 return true;
-//            // Respond to a click on the "Up" arrow button in the app bar
-//            case android.R.id.home:
-//                // If the pet hasn't changed, continue with navigating up to parent activity
-//                // which is the {@link CatalogActivity}.
-//                if (!mProdHasChanged) {
-//                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
-//                    return true;
-//                }
-
-//                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
-//                // Create a click listener to handle the user confirming that
-//                // changes should be discarded.
-//                DialogInterface.OnClickListener discardButtonClickListener =
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                // User clicked "Discard" button, navigate to parent activity.
-//                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
-//                            }
-//                        };
-//
-//                // Show a dialog that notifies the user they have unsaved changes
-//                showUnsavedChangesDialog(discardButtonClickListener);
-//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -412,10 +378,10 @@ public class InfoActivity extends AppCompatActivity {
         // user may accidentally hit save button with nothing input, don't save it!
         if ( mUriOfClickedProd == null
                 && TextUtils.isEmpty(nameString)
-                && TextUtils.isEmpty(priceString)
-                && TextUtils.isEmpty(quantityString)
-                && TextUtils.isEmpty(supplierString)
-                && mUriOfUploadedPic == null ) {
+                || TextUtils.isEmpty(priceString)
+                || TextUtils.isEmpty(quantityString)
+                || TextUtils.isEmpty(supplierString)
+                || mUriOfUploadedPic == null ) {
             Toast.makeText(this, getString(R.string.editor_insert_nothing),
                     Toast.LENGTH_SHORT).show();
             return;
@@ -448,10 +414,6 @@ public class InfoActivity extends AppCompatActivity {
         value.put(ProductContract.ProductEntry.COLUMN_QUANTITY, quantityString);
         value.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, supplierString);
         value.put(ProductContract.ProductEntry.COLUMN_PICURI, uriString);
-
-//
-//        ProductDbHelper mDbHelper = new ProductDbHelper(this);
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (mUriOfClickedProd == null){
             Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, value);
@@ -488,8 +450,6 @@ public class InfoActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         }
-
-//        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, value);
     }
 
     @Override
@@ -584,21 +544,9 @@ public class InfoActivity extends AppCompatActivity {
         if (uri == null || uri.toString().isEmpty())
             return null;
 
-        // origin method
-//         Get the dimensions of the View
-//        int targetW = mImageField.getWidth();
-//        int targetH = mImageField.getHeight();
-
-        // method 1 , force mesure
-//        mImageField.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//        int targetW = mImageField.getMeasuredWidth();
-//        int targetH = mImageField.getMeasuredHeight();
-
-        // method 2, manually set width and height
-        // ok this works, though not best solution
+        // dimensions were fixed
         int targetW = 120;
         int targetH = 120;
-        Log.i(LOG_TAG, "targetW is " + targetW + "; targetH is " + targetH);
 
         InputStream input = null;
         try {

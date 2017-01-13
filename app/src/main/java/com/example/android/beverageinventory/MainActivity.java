@@ -3,7 +3,6 @@ package com.example.android.beverageinventory;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,18 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.beverageinventory.data.ProductContract;
-import com.example.android.beverageinventory.data.ProductDbHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private ProductDbHelper mDbHelper;
-
     private ProductCursorAdapter mAdapter;
-
-    private SQLiteDatabase db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-////        测试database是否创建正确
-//        mDbHelper = new ProductDbHelper(this);
-
-//        insertDummyData();
         displayDatabaseInfo();
 
     }
@@ -67,24 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         displayDatabaseInfo();
     }
-
-//    private void insertDummyData(){
-//        ContentValues values = new ContentValues();
-//        values.put(ProductContract.ProductEntry.COLUMN_NAME, "Coffee");
-//        values.put(ProductContract.ProductEntry.COLUMN_PRICE, "30");
-//        values.put(ProductContract.ProductEntry.COLUMN_QUANTITY, "100");
-//        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER, "David");
-//        // an empty pic uri for now
-//        values.put(ProductContract.ProductEntry.COLUMN_PICURI, "");
-//
-//        Uri newRowUri = getContentResolver().insert(ProductContract.ProductEntry.CONTENT_URI, values);
-//        Log.i(LOG_TAG, "new row uri is " + newRowUri);
-////        // the direct insert to database
-////        db = mDbHelper.getWritableDatabase();
-////        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
-////        Log.i("CatalogActivity", "New row id is " + newRowId);
-//
-//    }
 
     private void displayDatabaseInfo(){
 
@@ -99,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = getContentResolver().query(ProductContract.ProductEntry.CONTENT_URI , projection, null, null, null, null);
 
-//        // the direct query to database
-//        db = mDbHelper.getReadableDatabase();
-//        Cursor cursor = db.query(ProductContract.ProductEntry.TABLE_NAME,
-//                null, null, null, null, null, null);
         mAdapter.swapCursor(cursor);
     }
 
